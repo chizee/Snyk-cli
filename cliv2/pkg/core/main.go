@@ -49,6 +49,7 @@ import (
 	"github.com/snyk/go-application-framework/pkg/networking/middleware"
 	"github.com/snyk/go-application-framework/pkg/runtimeinfo"
 	"github.com/snyk/go-application-framework/pkg/ui"
+	"github.com/snyk/go-application-framework/pkg/ui/uitypes"
 	"github.com/snyk/go-application-framework/pkg/utils"
 	"github.com/snyk/go-application-framework/pkg/workflow"
 	"github.com/snyk/go-httpauth/pkg/httpauth"
@@ -447,7 +448,14 @@ func handleError(err error) HandleError {
 	return resultError
 }
 
-func displayError(err error, userInterface ui.UserInterface, config configuration.Configuration, ctx context.Context) {
+func doctorTip(isCI bool) string {
+	if isCI {
+		return "Give the snyk doctor your logs to debug: `snyk doctor --input <log-file>`"
+	}
+	return "Try snyk doctor: `snyk <command> -d 2>&1 | snyk doctor --stdin`"
+}
+
+func displayError(err error, userInterface ui.UserInterface, config configuration.Configuration, ctx context.Context, isCI bool) {
 	if err != nil {
 		_, isExitError := err.(*exec.ExitError)
 		_, isErrorWithCode := err.(*cli_errors.ErrorWithExitCode)
@@ -467,6 +475,7 @@ func displayError(err error, userInterface ui.UserInterface, config configuratio
 			jsonErrorBuffer, _ := json.MarshalIndent(jsonError, "", "  ")
 			_ = userInterface.OutputError(fmt.Errorf("%s", jsonErrorBuffer))
 		} else {
+			ctx = context.WithValue(ctx, uitypes.ErrorTipKey, doctorTip(isCI))
 			uiError := userInterface.OutputError(err, ui.WithContext(ctx))
 			if uiError != nil {
 				globalLogger.Err(uiError).Msg("ui failed to show error")
@@ -514,7 +523,7 @@ func tearDown(err error, errorList []error, startTime time.Time, ua networking.U
 	exitCode := cliv2.DeriveExitCode(outputError)
 	globalLogger.Printf("Deriving Exit Code %d (cause: %v)", exitCode, outputError)
 
-	displayError(outputError, globalEngine.GetUserInterface(), globalConfiguration, globalContext)
+	displayError(outputError, globalEngine.GetUserInterface(), globalConfiguration, globalContext, cliAnalytics.IsCiEnvironment())
 
 	updateInstrumentationDataBeforeSending(cliAnalytics, startTime, ua, exitCode)
 
