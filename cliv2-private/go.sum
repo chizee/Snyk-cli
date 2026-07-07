@@ -591,8 +591,8 @@ github.com/snyk/go-httpauth v0.0.0-20240307114523-1f5ea3f55c65 h1:CEQuYv0Go6MEyR
 github.com/snyk/go-httpauth v0.0.0-20240307114523-1f5ea3f55c65/go.mod h1:88KbbvGYlmLgee4OcQ19yr0bNpXpOr2kciOthaSzCAg=
 github.com/snyk/policy-engine v1.1.4 h1:0XpaMpl7ixSk4+dlpHYg2iKEBuv+5Ci+QIcbsmhktao=
 github.com/snyk/policy-engine v1.1.4/go.mod h1:yAlMDZhzORiZcbJCW0GEk/nHkc4DBDKp8BRoiGTWkBE=
-github.com/snyk/remy-cli-extension v1.23.0 h1:cjfoltDIsJlunC2Zsx9hPN8EuJAAPUCZFDJvyg6Qj90=
-github.com/snyk/remy-cli-extension v1.23.0/go.mod h1:qpL64pAGKDAbApnP8CLIAIOLPD6R+Ge6qA4m0L2auKo=
+github.com/snyk/remy-cli-extension v1.23.1 h1:dZRsQLwFvqABOf5RRw2gTRSQC3nDkbBwGqwdYOOW4/Y=
+github.com/snyk/remy-cli-extension v1.23.1/go.mod h1:C9xfjNYkSvQUVZSW30AspdwxPn1pPFj/e8OrSutJOxc=
 github.com/snyk/snyk-iac-capture v0.6.5 h1:992DXCAJSN97KtUh8T5ndaWwd/6ZCal2bDkRXqM1u/E=
 github.com/snyk/snyk-iac-capture v0.6.5/go.mod h1:e47i55EmM0F69ZxyFHC4sCi7vyaJW6DLoaamJJCzWGk=
 github.com/snyk/snyk-ls v0.0.0-20260626083941-77c2abaeaaaa h1:qKLDBzWOoLLn06e69Cw7MLb6TtInLN+Y6IhD+oYVxdw=
@@ -679,8 +679,8 @@ github.com/yosida95/uritemplate/v3 v3.0.2 h1:Ed3Oyj9yrmi9087+NczuL5BwkIc4wvTb5zI
 github.com/yosida95/uritemplate/v3 v3.0.2/go.mod h1:ILOh0sOhIJR3+L/8afwt/kE++YT040gmv5BQTMR2HP4=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-github.com/yuin/goldmark v1.7.13 h1:GPddIs617DnBLFFVJFgpo1aBfe/4xcvMc3SB5t/D0pA=
-github.com/yuin/goldmark v1.7.13/go.mod h1:ip/1k0VRfGynBgxOz0yCqHrbZXhcjxyuS66Brc7iBKg=
+github.com/yuin/goldmark v1.7.17 h1:p36OVWwRb246iHxA/U4p8OPEpOTESm4n+g+8t0EE5uA=
+github.com/yuin/goldmark v1.7.17/go.mod h1:ip/1k0VRfGynBgxOz0yCqHrbZXhcjxyuS66Brc7iBKg=
 github.com/yuin/goldmark-emoji v1.0.6 h1:QWfF2FYaXwL74tfGOW5izeiZepUDroDJfWubQI9HTHs=
 github.com/yuin/goldmark-emoji v1.0.6/go.mod h1:ukxJDKFpdFb5x0a5HqbdlcKtebh086iJpI31LTKmWuA=
 github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo0=
