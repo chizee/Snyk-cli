@@ -622,7 +622,7 @@ func Test_displayError(t *testing.T) {
 		userInterface.EXPECT().OutputError(err, gomock.Any()).Times(1)
 
 		config := configuration.NewWithOpts(configuration.WithAutomaticEnv())
-		displayError(err, userInterface, config, t.Context())
+		displayError(err, userInterface, config, t.Context(), false)
 	})
 
 	scenarios := []struct {
@@ -643,7 +643,7 @@ func Test_displayError(t *testing.T) {
 		t.Run(fmt.Sprintf("%s does not display anything", scenario.name), func(t *testing.T) {
 			config := configuration.NewWithOpts(configuration.WithAutomaticEnv())
 			err := scenario.err
-			displayError(err, userInterface, config, t.Context())
+			displayError(err, userInterface, config, t.Context(), false)
 		})
 	}
 
@@ -652,7 +652,21 @@ func Test_displayError(t *testing.T) {
 		userInterface.EXPECT().OutputError(err, gomock.Any()).Times(1)
 
 		config := configuration.NewWithOpts(configuration.WithAutomaticEnv())
-		displayError(err, userInterface, config, t.Context())
+		displayError(err, userInterface, config, t.Context(), false)
+	})
+}
+
+func Test_doctorTip(t *testing.T) {
+	t.Run("CI advertises the --input flag", func(t *testing.T) {
+		tip := doctorTip(true)
+		assert.Contains(t, tip, "--input")
+		assert.NotContains(t, tip, "2>&1")
+	})
+
+	t.Run("interactive advertises piping debug logs", func(t *testing.T) {
+		tip := doctorTip(false)
+		assert.Contains(t, tip, "2>&1 | snyk doctor --stdin")
+		assert.NotContains(t, tip, "--input")
 	})
 }
 
