@@ -1331,7 +1331,34 @@ workflows:
                 - '/release.*/'
 
       - release-npm:
+          name: upload npm (preview)
+          deployment: preview
+          context:
+            - devex_cli_docker_hub
+          requires:
+            - upload preview
+          filters:
+            branches:
+              only:
+                - main
+                - '/release.*/'
+
+      - release-npm:
+          name: upload npm (rc)
+          deployment: rc
+          context:
+            - devex_cli_docker_hub
+          requires:
+            - upload release candidate
+          filters:
+            branches:
+              only:
+                - main
+                - '/release.*/'
+
+      - release-npm:
           name: upload npm
+          deployment: stable
           context:
             - devex_cli_docker_hub
           requires:
@@ -1349,7 +1376,7 @@ workflows:
             - devex_cli_docker_hub
           deployment: preview
           requires:
-            - upload preview
+            - upload npm (preview)
           filters:
             branches:
               only:
@@ -1362,7 +1389,7 @@ workflows:
             - devex_cli_docker_hub
           deployment: rc
           requires:
-            - upload release candidate
+            - upload npm (rc)
           filters:
             branches:
               only:
@@ -1992,13 +2019,17 @@ jobs:
       - failed-release-notification
 
   release-npm:
+    parameters:
+      deployment:
+        type: string
+        default: stable
     executor: docker-amd64
     steps:
       - prepare-workspace
       - shall-deploy:
-          deployment: stable
+          deployment: << parameters.deployment >>
       - run:
-          name: Publish to npm
+          name: Publish to npm ( << parameters.deployment >> )
           command: |
             export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
             ./release-scripts/upload-artifacts.sh npm
