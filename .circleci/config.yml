@@ -19,6 +19,10 @@ parameters:
   go_version:
     type: string
     # https://go.dev/doc/devel/release
+    default: '1.26.5'
+  fips_go_version:
+    type: string
+    # https://github.com/nicholasgasior/microsoft-go -- FIPS Go may lag behind upstream
     default: '1.26.4'
   aws_version:
     type: string
@@ -212,6 +216,9 @@ commands:
         type: string
       extraction_path:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       cache_key_file:
         type: string
         default: go_cache_key.txt
@@ -219,7 +226,7 @@ commands:
       - run:
           name: Create Cache Key
           command: |
-            echo << parameters.extraction_path >>-<< parameters.base_url >>-<< parameters.go_target_os >>-<< parameters.go_arch >>-<< pipeline.parameters.go_version >> > << parameters.cache_key_file >>
+            echo << parameters.extraction_path >>-<< parameters.base_url >>-<< parameters.go_target_os >>-<< parameters.go_arch >>-<< parameters.go_version >> > << parameters.cache_key_file >>
             cat << parameters.cache_key_file >>
       - restore_cache:
           name: Restoring go binary cache
@@ -227,7 +234,7 @@ commands:
             - go-binary-cache-{{ checksum "<< parameters.cache_key_file >>" }}
       - run:
           name: Download go binary
-          command: python ./scripts/download_go.py << pipeline.parameters.go_version >> --go_os=<< parameters.go_os >> --go_arch=<< parameters.go_arch >> --base_url=<< parameters.base_url >> --extraction_path=<< parameters.extraction_path >>
+          command: python ./scripts/download_go.py << parameters.go_version >> --go_os=<< parameters.go_os >> --go_arch=<< parameters.go_arch >> --base_url=<< parameters.base_url >> --extraction_path=<< parameters.extraction_path >>
       - save_cache:
           name: Caching go binary
           key: go-binary-cache-{{ checksum "<< parameters.cache_key_file >>" }}
@@ -700,6 +707,7 @@ workflows:
           go_os: linux
           go_arch: amd64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           make_target: build-fips BUILD_MODE=private
           executor: docker-amd64-xl
           requires:
@@ -746,6 +754,7 @@ workflows:
           go_os: linux
           go_arch: arm64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           make_target: build-fips BUILD_MODE=private
           executor: docker-arm64-xl
           requires:
@@ -817,6 +826,7 @@ workflows:
           go_os: windows
           go_arch: amd64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           make_target: build clean-golang build-fips BUILD_MODE=private
           install_deps_extension: windows-native-full-signing
           install_path: 'C:\'
@@ -903,6 +913,7 @@ workflows:
           go_os: linux
           go_arch: arm64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           shards: 6
           executor: docker-arm64
           test_snyk_command: ./binary-releases/fips/snyk-linux-arm64
@@ -1480,6 +1491,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       install_path:
         type: string
         default: '/tmp'
@@ -1491,6 +1505,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - setup-go-private-modules
       - run:
@@ -1551,6 +1566,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       install_path:
         type: string
         default: '.'
@@ -1561,6 +1579,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - setup-go-private-modules
       - run:
@@ -1661,6 +1680,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       make_target:
         type: string
         default: 'build'
@@ -1679,6 +1701,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - setup-go-private-modules
       - restore_cache:
@@ -1711,6 +1734,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       install_path:
         type: string
         default: '.'
@@ -1763,6 +1789,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - run:
           name: Running acceptance tests
