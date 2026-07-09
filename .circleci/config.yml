@@ -19,7 +19,10 @@ parameters:
   go_version:
     type: string
     # https://go.dev/doc/devel/release
-    default: '1.26.4'
+    default: '1.26.5'
+  fips_go_version:
+    type: string
+    default: '1.26.5'
   aws_version:
     type: string
     # https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst
@@ -212,6 +215,9 @@ commands:
         type: string
       extraction_path:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       cache_key_file:
         type: string
         default: go_cache_key.txt
@@ -219,7 +225,7 @@ commands:
       - run:
           name: Create Cache Key
           command: |
-            echo << parameters.extraction_path >>-<< parameters.base_url >>-<< parameters.go_target_os >>-<< parameters.go_arch >>-<< pipeline.parameters.go_version >> > << parameters.cache_key_file >>
+            echo << parameters.extraction_path >>-<< parameters.base_url >>-<< parameters.go_target_os >>-<< parameters.go_arch >>-<< parameters.go_version >> > << parameters.cache_key_file >>
             cat << parameters.cache_key_file >>
       - restore_cache:
           name: Restoring go binary cache
@@ -227,7 +233,7 @@ commands:
             - go-binary-cache-{{ checksum "<< parameters.cache_key_file >>" }}
       - run:
           name: Download go binary
-          command: python ./scripts/download_go.py << pipeline.parameters.go_version >> --go_os=<< parameters.go_os >> --go_arch=<< parameters.go_arch >> --base_url=<< parameters.base_url >> --extraction_path=<< parameters.extraction_path >>
+          command: python ./scripts/download_go.py << parameters.go_version >> --go_os=<< parameters.go_os >> --go_arch=<< parameters.go_arch >> --base_url=<< parameters.base_url >> --extraction_path=<< parameters.extraction_path >>
       - save_cache:
           name: Caching go binary
           key: go-binary-cache-{{ checksum "<< parameters.cache_key_file >>" }}
@@ -436,7 +442,7 @@ commands:
     parameters:
       items:
         type: string
-        default: go gradle python pipenv elixir composer gradle@9 maven sbt dotnet uv
+        default: go gradle python pipenv elixir composer gradle@9 maven dotnet uv
     steps:
       - run:
           name: Installing Rosetta
@@ -460,6 +466,16 @@ commands:
       - run:
           name: Upgrade npm to satisfy package.json engine requirements (>=11.10)
           command: npm install -g npm@^11.10
+      - restore_cache:
+          keys:
+            - acceptance-{{ checksum "scripts/install-sbt.sh" }}
+      - run:
+          name: Installing sbt 1.x
+          command: ./scripts/install-sbt.sh
+      - save_cache:
+          key: acceptance-{{ checksum "scripts/install-sbt.sh" }}
+          paths:
+            - ~/sbt
 
   install-deps-macos-build:
     parameters:
@@ -690,6 +706,7 @@ workflows:
           go_os: linux
           go_arch: amd64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           make_target: build-fips BUILD_MODE=private
           executor: docker-amd64-xl
           requires:
@@ -736,6 +753,7 @@ workflows:
           go_os: linux
           go_arch: arm64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           make_target: build-fips BUILD_MODE=private
           executor: docker-arm64-xl
           requires:
@@ -807,6 +825,7 @@ workflows:
           go_os: windows
           go_arch: amd64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           make_target: build clean-golang build-fips BUILD_MODE=private
           install_deps_extension: windows-native-full-signing
           install_path: 'C:\'
@@ -893,6 +912,7 @@ workflows:
           go_os: linux
           go_arch: arm64
           go_download_base_url: << pipeline.parameters.fips_go_download_base_url >>
+          go_version: << pipeline.parameters.fips_go_version >>
           shards: 6
           executor: docker-arm64
           test_snyk_command: ./binary-releases/fips/snyk-linux-arm64
@@ -1321,9 +1341,35 @@ workflows:
                 - '/release.*/'
 
       - release-npm:
-          name: upload npm
+          name: upload npm (preview)
+          deployment: preview
           context:
-            - team-hammerhead-common-deploy-tokens
+            - devex_cli_docker_hub
+          requires:
+            - upload preview
+          filters:
+            branches:
+              only:
+                - main
+                - '/release.*/'
+
+      - release-npm:
+          name: upload npm (rc)
+          deployment: rc
+          context:
+            - devex_cli_docker_hub
+          requires:
+            - upload release candidate
+          filters:
+            branches:
+              only:
+                - main
+                - '/release.*/'
+
+      - release-npm:
+          name: upload npm
+          deployment: stable
+          context:
             - devex_cli_docker_hub
           requires:
             - upload github
@@ -1340,7 +1386,7 @@ workflows:
             - devex_cli_docker_hub
           deployment: preview
           requires:
-            - upload preview
+            - upload npm (preview)
           filters:
             branches:
               only:
@@ -1353,7 +1399,7 @@ workflows:
             - devex_cli_docker_hub
           deployment: rc
           requires:
-            - upload release candidate
+            - upload npm (rc)
           filters:
             branches:
               only:
@@ -1444,6 +1490,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       install_path:
         type: string
         default: '/tmp'
@@ -1455,6 +1504,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - setup-go-private-modules
       - run:
@@ -1515,6 +1565,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       install_path:
         type: string
         default: '.'
@@ -1525,6 +1578,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - setup-go-private-modules
       - run:
@@ -1625,6 +1679,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       make_target:
         type: string
         default: 'build'
@@ -1643,6 +1700,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - setup-go-private-modules
       - restore_cache:
@@ -1675,6 +1733,9 @@ jobs:
         type: string
       go_download_base_url:
         type: string
+      go_version:
+        type: string
+        default: << pipeline.parameters.go_version >>
       install_path:
         type: string
         default: '.'
@@ -1727,6 +1788,7 @@ jobs:
           go_target_os: << parameters.go_target_os >>
           go_arch: << parameters.go_arch >>
           base_url: << parameters.go_download_base_url >>
+          go_version: << parameters.go_version >>
           extraction_path: << parameters.install_path >>
       - run:
           name: Running acceptance tests
@@ -1855,7 +1917,9 @@ jobs:
           version: << pipeline.parameters.aws_version >>
       - run:
           name: Pre-Publishing
-          command: make release-pre
+          command: |
+            export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            make release-pre
       - failed-release-notification
 
   npm-validation:
@@ -1981,14 +2045,20 @@ jobs:
       - failed-release-notification
 
   release-npm:
+    parameters:
+      deployment:
+        type: string
+        default: stable
     executor: docker-amd64
     steps:
       - prepare-workspace
       - shall-deploy:
-          deployment: stable
+          deployment: << parameters.deployment >>
       - run:
-          name: Publish to npm
-          command: ./release-scripts/upload-artifacts.sh npm
+          name: Publish to npm ( << parameters.deployment >> )
+          command: |
+            export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+            ./release-scripts/upload-artifacts.sh npm
       - failed-release-notification
 
   trigger-building-distribution-channels:
