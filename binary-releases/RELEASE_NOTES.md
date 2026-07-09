@@ -22,3 +22,4 @@ The Snyk CLI is being deployed to different deployment channels, users can selec
   - CVE-2026-41178 ([a1d2e64](https://github.com/snyk/snyk/commit/a1d2e6486e2c51ec7316ec69c4965745c128f367))
   - CVE-2026-5160 ([b8a3659](https://github.com/snyk/snyk/commit/b8a3659319f5e54e148e195d4b985be4c36dbbc6))
   - CVE-2025-64718, CVE-2026-53550 ([ed15dd8](https://github.com/snyk/snyk/commit/ed15dd876d6b56ef5bfc235a9c29e6d040668bdf))
+  - CVE-2026-39822, CVE-2026-42505 ([5b0e051](https://github.com/snyk/snyk/commit/5b0e0517f8e053a67c768a960b95ada464160875))
