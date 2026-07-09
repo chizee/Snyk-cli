@@ -138,6 +138,7 @@ async function buildDepGraph(
           strictOutOfSync: options.strictOutOfSync,
           honorAliases: true,
           showNpmScope: options.showNpmScope,
+          includeComponentMetadata: options.includeComponentMetadata,
         },
       );
     case NodeLockfileVersion.YarnLockV2:
@@ -151,6 +152,8 @@ async function buildDepGraph(
           strictOutOfSync: options.strictOutOfSync,
           honorAliases: true,
           showNpmScope: options.showNpmScope,
+          // Threaded for a uniform API; berry component-metadata is deferred (no-op).
+          includeComponentMetadata: options.includeComponentMetadata,
         },
       );
     case NodeLockfileVersion.NpmLockV2:
