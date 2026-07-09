@@ -22,8 +22,7 @@ parameters:
     default: '1.26.5'
   fips_go_version:
     type: string
-    # https://github.com/nicholasgasior/microsoft-go -- FIPS Go may lag behind upstream
-    default: '1.26.4'
+    default: '1.26.5'
   aws_version:
     type: string
     # https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst
