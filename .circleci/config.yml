@@ -1684,7 +1684,7 @@ jobs:
         default: << pipeline.parameters.go_version >>
       make_target:
         type: string
-        default: 'build'
+        default: 'build BUILD_MODE=private'
       install_deps_extension:
         type: string
         default: 'noop'
