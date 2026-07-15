@@ -1,6 +1,6 @@
 module github.com/snyk/cli/cliv2-private
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/snyk/cli/cliv2 v0.0.0
