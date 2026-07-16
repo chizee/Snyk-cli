@@ -204,7 +204,7 @@
     "@snyk/error-catalog-nodejs-public@4.0.4": {
       "uuid": "$uuid"
     },
-    "snyk-nodejs-lockfile-parser@2.10.0": {
+    "snyk-nodejs-lockfile-parser@2.8.1": {
       "uuid": "$uuid"
     }
   },
