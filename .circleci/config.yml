@@ -453,7 +453,7 @@ commands:
   setup-go-private-modules:
     description: >-
       Configure git and Go to fetch private snyk modules using the
-      GITHUB_PRIVATE_TOKEN provided by the `go-private-modules` context.
+      GITHUB_PRIVATE_TOKEN provided by the `team-cli-go-private-modules` context.
       Safe to call on Linux, macOS and Windows (uses bash on all executors).
     steps:
       - run:
@@ -466,7 +466,7 @@ commands:
             fi
             if [ -z "${GITHUB_PRIVATE_TOKEN}" ]; then
               echo "GITHUB_PRIVATE_TOKEN is not set; skipping private Snyk modules setup."
-              echo "Add the 'go-private-modules' context to this job if private modules are required."
+              echo "Add the 'team-cli-go-private-modules' context to this job if private modules are required."
               exit 0
             fi
             git config --global url."https://${GITHUB_PRIVATE_TOKEN}:x-oauth-basic@github.com/snyk".insteadOf "https://github.com/snyk"
@@ -632,7 +632,7 @@ workflows:
       - docs-only-check:
           context:
             - devex_cli_docker_hub
-            - go-private-modules
+            - team-cli-go-private-modules
           filters:
             branches:
               only:
@@ -641,7 +641,7 @@ workflows:
       - prepare-build:
           context:
             - devex_cli_docker_hub
-            - go-private-modules
+            - team-cli-go-private-modules
           requires:
             - secrets-scan
           filters:
@@ -657,7 +657,7 @@ workflows:
           context:
             - devex_cli
             - devex_cli_docker_hub
-            - go-private-modules
+            - team-cli-go-private-modules
           requires:
             - prepare-build
           filters:
@@ -687,7 +687,7 @@ workflows:
             - nodejs-install
             - team_hammerhead-cli
             - devex_cli_docker_hub
-            - go-private-modules
+            - team-cli-go-private-modules
           requires:
             - prepare-build
           filters:
@@ -736,7 +736,7 @@ workflows:
           name: build linux amd64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: linux
           go_os: linux
@@ -751,7 +751,7 @@ workflows:
           name: build linux static amd64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: linux
           go_os: linux
@@ -767,7 +767,7 @@ workflows:
           name: build linux fips amd64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: linux
           go_os: linux
@@ -783,7 +783,7 @@ workflows:
           name: build linux arm64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: linux
           go_os: linux
@@ -798,7 +798,7 @@ workflows:
           name: build linux static arm64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: linux
           go_os: linux
@@ -814,7 +814,7 @@ workflows:
           name: build linux fips arm64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: linux
           go_os: linux
@@ -830,7 +830,7 @@ workflows:
           name: build alpine amd64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: alpine
           go_os: linux
@@ -845,7 +845,7 @@ workflows:
           name: build alpine arm64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
             - devex_cli_docker_hub
           go_target_os: alpine
           go_os: linux
@@ -867,7 +867,7 @@ workflows:
           context:
             - snyk-macos-signing
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
           requires:
             - prepare-build
 
@@ -882,7 +882,7 @@ workflows:
           context:
             - snyk-macos-signing
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
           requires:
             - prepare-build
 
@@ -899,7 +899,7 @@ workflows:
           executor: win-server2022-amd64
           context:
             - iac-cli
-            - go-private-modules
+            - team-cli-go-private-modules
           requires:
             - prepare-build
 
