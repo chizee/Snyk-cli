@@ -1583,6 +1583,7 @@ jobs:
           release-branch: main
           open-source-scan-reachability: true
           open-source-scan: high
+          open-source-block-ignore-sla: true
 
   docs-only-check:
     executor: docker-amd64
