@@ -5,7 +5,7 @@ go 1.26.5
 require (
 	github.com/snyk/ambient-canary v0.0.0-20260722064253-fba619a134a9
 	github.com/snyk/cli/cliv2 v0.0.0
-	github.com/snyk/remy-cli-extension v1.28.0
+	github.com/snyk/remy-cli-extension v1.30.0
 )
 
 require (
@@ -224,7 +224,7 @@ require (
 	github.com/snyk/policy-engine v1.1.4 // indirect
 	github.com/snyk/snyk-iac-capture v0.6.5 // indirect
 	github.com/snyk/snyk-ls v0.0.0-20260722115044-83ac40a0e148 // indirect
-	github.com/snyk/studio-mcp v1.14.0 // indirect
+	github.com/snyk/studio-mcp v1.15.1 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/sourcegraph/go-lsp v0.0.0-20240223163137-f80c5dd31dfd // indirect
 	github.com/spf13/afero v1.15.0 // indirect
