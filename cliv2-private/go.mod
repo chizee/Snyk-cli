@@ -3,6 +3,7 @@ module github.com/snyk/cli/cliv2-private
 go 1.26.5
 
 require (
+	github.com/snyk/ambient-canary v0.0.0-20260722064253-fba619a134a9
 	github.com/snyk/cli/cliv2 v0.0.0
 	github.com/snyk/remy-cli-extension v1.28.0
 )
@@ -101,7 +102,7 @@ require (
 	github.com/erni27/imcache v1.2.1 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
-	github.com/fsnotify/fsnotify v1.9.0 // indirect
+	github.com/fsnotify/fsnotify v1.10.1 // indirect
 	github.com/gertd/go-pluralize v0.2.1 // indirect
 	github.com/getsentry/sentry-go v0.31.1 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
@@ -173,6 +174,8 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/oapi-codegen/runtime v1.1.2 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
+	github.com/opcoder0/capabilities v0.0.0-20221222060822-17fd73bffd2a // indirect
+	github.com/opcoder0/fanotify v0.4.2 // indirect
 	github.com/open-policy-agent/opa v0.69.0 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/otiai10/copy v1.14.1 // indirect
@@ -220,7 +223,7 @@ require (
 	github.com/snyk/go-httpauth v0.0.0-20240307114523-1f5ea3f55c65 // indirect
 	github.com/snyk/policy-engine v1.1.4 // indirect
 	github.com/snyk/snyk-iac-capture v0.6.5 // indirect
-	github.com/snyk/snyk-ls v0.0.0-20260717113823-6ee379465b93 // indirect
+	github.com/snyk/snyk-ls v0.0.0-20260722115044-83ac40a0e148 // indirect
 	github.com/snyk/studio-mcp v1.14.0 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/sourcegraph/go-lsp v0.0.0-20240223163137-f80c5dd31dfd // indirect
@@ -233,6 +236,7 @@ require (
 	github.com/standard-webhooks/standard-webhooks/libraries v0.0.1 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	github.com/syncthing/notify v0.0.0-20250528144937-c7027d4f7465 // indirect
 	github.com/tchap/go-patricia/v2 v2.3.1 // indirect
 	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
@@ -315,3 +319,5 @@ replace github.com/snyk/cli/cliv2 => ../cliv2
 // replace github.com/snyk/cli-extension-sbom => ../../cli-extension-sbom
 
 // replace github.com/snyk/cli-extension-secrets => ../../cli-extension-secrets
+
+// replace github.com/snyk/ambient-canary => ../../ambient-canary
