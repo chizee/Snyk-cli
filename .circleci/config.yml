@@ -1870,6 +1870,21 @@ jobs:
     steps:
       - prepare-workspace
       - install-deps-<< parameters.install_deps_extension >>
+      - run:
+          name: Create Maven cache key
+          command: >-
+            git ls-files -s --
+            'test/**/pom.xml'
+            'test/**/settings.xml'
+            'test/**/.mvn/maven.config'
+            'test/**/.mvn/extensions.xml'
+            'test/**/.mvn/wrapper/maven-wrapper.properties'
+            > maven-cache-key.txt
+      - restore_cache:
+          name: Restore Maven cache
+          keys:
+            - acceptance-maven-v1-<< parameters.executor >>-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ checksum "maven-cache-key.txt" }}
+            - acceptance-maven-v1-<< parameters.executor >>-{{ .Environment.CIRCLE_NODE_INDEX }}-
       - when:
           condition:
             matches:
@@ -1899,6 +1914,12 @@ jobs:
             TEST_SNYK_DONT_SKIP_ANYTHING: << parameters.dont_skip_tests >>
             JEST_JUNIT_OUTPUT_DIR: test/reports
             NODE_OPTIONS: --max-old-space-size=4096
+      - save_cache:
+          name: Save Maven cache
+          key: acceptance-maven-v1-<< parameters.executor >>-{{ .Environment.CIRCLE_NODE_INDEX }}-{{ checksum "maven-cache-key.txt" }}
+          paths:
+            - ~/.m2/repository
+            - ~/.m2/wrapper/dists
       - run:
           name: Normalize junit file paths for timing data
           when: always
